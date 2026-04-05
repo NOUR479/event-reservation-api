@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Controller;
+
+use App\Repository\EventRepository;
+use Symfony\Component\BrowserKit\Request;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Event;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+final class EventController extends AbstractController
+{
+   #[Route('/api/events', methods: ['POST'])]
+    public function create(Request $request, EntityManagerInterface $em)
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $event = new Event();
+        $event->setName($data['name']);
+        $event->setDescription($data['description']);
+        $event->setDate(new \DateTime($data['date']));
+        $event->setLocation($data['location']);
+
+        $em->persist($event);
+        $em->flush();
+
+        return $this->json(['message' => 'Event created']);
+    }
+
+    #[Route('/api/events', methods: ['GET'])]
+    public function list(EventRepository $repo)
+    {
+        return $this->json($repo->findAll());
+    }
+
+}
