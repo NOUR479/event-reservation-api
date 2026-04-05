@@ -9,11 +9,13 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 final class AuthController extends AbstractController
 {
     #[Route('/api/register', name: 'app_register',methods:['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function register(Request $request,EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher)
     {
        $data = json_decode($request->getContent(), true);

@@ -9,10 +9,12 @@ use App\Entity\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class EventController extends AbstractController
 {
    #[Route('/api/events', methods: ['POST'])]
+   #[IsGranted('ROLE_USER')]
     public function create(Request $request, EntityManagerInterface $em)
     {
         $data = json_decode($request->getContent(), true);
