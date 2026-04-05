@@ -1,0 +1,500 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Accueil | Event Reservation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            background:
+                radial-gradient(circle at top right, rgba(22, 163, 74, 0.12), transparent 28%),
+                linear-gradient(180deg, #f6f7fb 0%, #eef2f7 100%);
+            color: #14213d;
+        }
+
+        .section-shell {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .hero-section {
+            padding: 4.5rem 0 2rem;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: #dff7e8;
+            color: #146c43;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 0.7rem 1rem;
+            margin-bottom: 1.4rem;
+            font-size: 0.92rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4.6rem);
+            line-height: 1.05;
+            font-weight: 800;
+            color: #14213d;
+            margin-bottom: 1.3rem;
+        }
+
+        .hero-text {
+            font-size: 1.06rem;
+            color: #5b6475;
+            line-height: 1.85;
+            max-width: 640px;
+            margin-bottom: 2rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.9rem;
+        }
+
+        .btn-main {
+            border: none;
+            border-radius: 16px;
+            padding: 0.95rem 1.4rem;
+            font-weight: 700;
+            transition: 0.25s ease;
+        }
+
+        .btn-main-primary {
+            background: #1f6feb;
+            color: #fff;
+            box-shadow: 0 14px 30px rgba(31, 111, 235, 0.22);
+        }
+
+        .btn-main-primary:hover {
+            background: #1357bd;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-main-light {
+            background: #fff;
+            color: #14213d;
+            border: 1px solid #d6dce5;
+        }
+
+        .btn-main-light:hover {
+            background: #f9fafb;
+            color: #14213d;
+        }
+
+        .hero-card {
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid #dde3eb;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 24px 55px rgba(20, 33, 61, 0.08);
+        }
+
+        .hero-card img {
+            width: 100%;
+            height: 100%;
+            min-height: 420px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .content-section {
+            padding: 1rem 0 4rem;
+        }
+
+        .panel-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #dde3eb;
+            border-radius: 24px;
+            padding: 1.6rem;
+            box-shadow: 0 18px 40px rgba(20, 33, 61, 0.06);
+        }
+
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #14213d;
+            margin-bottom: 0.7rem;
+        }
+
+        .panel-text {
+            color: #5b6475;
+            line-height: 1.75;
+            margin-bottom: 0;
+        }
+
+        .auth-panel,
+        .dashboard-panel,
+        .subsection,
+        #admin-create-form {
+            display: none;
+        }
+
+        .auth-panel.is-visible,
+        .dashboard-panel.is-visible,
+        .subsection.is-visible,
+        #admin-create-form.is-visible {
+            display: block;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.55rem 0.9rem;
+            border-radius: 999px;
+            background: #eef4ff;
+            color: #1f4ea3;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .flash-box {
+            display: none;
+            margin-top: 1rem;
+            padding: 0.95rem 1rem;
+            border-radius: 16px;
+            font-weight: 600;
+        }
+
+        .flash-box.is-visible {
+            display: block;
+        }
+
+        .flash-box[data-tone="success"] {
+            background: #e8f8ee;
+            color: #146c43;
+        }
+
+        .flash-box[data-tone="error"] {
+            background: #fdecec;
+            color: #b42318;
+        }
+
+        .flash-box[data-tone="info"] {
+            background: #eef4ff;
+            color: #1f4ea3;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin-top: 1.25rem;
+        }
+
+        .quick-action {
+            border: 1px solid #dde3eb;
+            border-radius: 18px;
+            padding: 1rem;
+            background: #f9fbfe;
+        }
+
+        .quick-action h3 {
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+            color: #14213d;
+        }
+
+        .quick-action p {
+            color: #5b6475;
+            margin-bottom: 0.9rem;
+        }
+
+        .mini-grid,
+        .admin-event-list,
+        .admin-reservation-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .event-item,
+        .reservation-item,
+        .admin-event-card,
+        .admin-reservation-card {
+            border: 1px solid #dde3eb;
+            border-radius: 18px;
+            padding: 1rem;
+            background: #fff;
+        }
+
+        .event-item h4,
+        .reservation-item h4,
+        .admin-event-card h4,
+        .admin-reservation-card h4 {
+            margin: 0 0 0.45rem;
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+        .meta-text {
+            color: #5b6475;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 0;
+        }
+
+        .admin-layout {
+            display: grid;
+            gap: 1.25rem;
+        }
+
+        .admin-toolbar,
+        .admin-card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .admin-form {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 18px;
+            background: #f8fbff;
+            border: 1px solid #dde3eb;
+        }
+
+        @media (max-width: 991.98px) {
+            .hero-section {
+                padding: 2rem 0 1rem;
+            }
+
+            .hero-card img {
+                min-height: 300px;
+            }
+
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="section-shell" data-app-root>
+        <section class="hero-section">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <span class="hero-badge">
+                        Une solution plus claire pour reserver vos evenements
+                    </span>
+
+                    <h1 class="hero-title">
+                        Gerez votre acces,
+                        vos reservations et votre espace en toute simplicite
+                    </h1>
+
+                    <p class="hero-text">
+                        Cette plateforme vous permet de rejoindre rapidement le bon parcours.
+                        Creez un compte, connectez-vous, puis accedez directement a l espace
+                        adapte a votre role pour continuer votre experience sans confusion.
+                    </p>
+
+                    <div class="hero-actions">
+                        <button type="button" class="btn btn-main btn-main-primary" data-action="show-register">
+                            S'enregistrer
+                        </button>
+                        <button type="button" class="btn btn-main btn-main-light" data-action="show-login">
+                            Se connecter
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="hero-card">
+                        <img
+                            src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80"
+                            alt="Reservation evenement"
+                        >
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div id="register-panel" class="panel-card auth-panel">
+                        <div class="status-pill mb-3">Inscription</div>
+                        <h2 class="panel-title">Creer un compte</h2>
+                        <p class="panel-text mb-4">
+                            Completez le formulaire, choisissez votre role et rejoignez
+                            l espace qui correspond a votre utilisation.
+                        </p>
+
+                        <form data-form="register">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Email</label>
+                                <input type="email" name="email" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Mot de passe</label>
+                                <input type="password" name="password" class="form-control" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Role</label>
+                                <select name="role" class="form-select" required>
+                                    <option value="ROLE_USER">Utilisateur</option>
+                                    <option value="ROLE_ADMIN">Admin</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-main btn-main-primary w-100">
+                                Finaliser l inscription
+                            </button>
+                        </form>
+                    </div>
+
+                    <div id="login-panel" class="panel-card auth-panel">
+                        <div class="status-pill mb-3">Connexion</div>
+                        <h2 class="panel-title">Acceder a votre espace</h2>
+                        <p class="panel-text mb-4">
+                            Saisissez vos identifiants pour ouvrir directement le bon dashboard.
+                        </p>
+
+                        <form data-form="login">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Email</label>
+                                <input type="email" name="email" class="form-control" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Mot de passe</label>
+                                <input type="password" name="password" class="form-control" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-main btn-main-light w-100">
+                                Se connecter
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div id="user-dashboard" class="panel-card dashboard-panel">
+                        <div class="status-pill mb-3">Dashboard utilisateur</div>
+                        <h2 class="panel-title">Bienvenue dans votre espace</h2>
+                        <p class="panel-text mb-3">
+                            Retrouvez vos deux actions principales pour suivre vos reservations
+                            et parcourir les evenements disponibles.
+                        </p>
+
+                        <div class="action-grid">
+                            <div class="quick-action">
+                                <h3>Mes reservations</h3>
+                                <p>Consulter les reservations deja enregistrees.</p>
+                                <button type="button" class="btn btn-main btn-main-primary w-100" data-action="show-my-reservations">
+                                    Voir mes reservations
+                                </button>
+                            </div>
+
+                            <div class="quick-action">
+                                <h3>Les evenements</h3>
+                                <p>Parcourir les evenements disponibles en cartes.</p>
+                                <button type="button" class="btn btn-main btn-main-light w-100" data-action="show-events">
+                                    Voir les events
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="user-reservations-section" class="subsection">
+                            <h3 class="panel-title mt-4">Mes reservations</h3>
+                            <div id="user-reservation-list" class="mini-grid"></div>
+                        </div>
+
+                        <div id="user-events-section" class="subsection">
+                            <h3 class="panel-title mt-4">Evenements disponibles</h3>
+                            <div id="user-event-list" class="mini-grid"></div>
+                        </div>
+
+                        <button type="button" class="btn btn-main btn-main-light mt-4" data-action="logout">
+                            Se deconnecter
+                        </button>
+                    </div>
+
+                    <div id="admin-dashboard" class="panel-card dashboard-panel">
+                        <div class="status-pill mb-3">Dashboard admin</div>
+                        <h2 class="panel-title">Espace administration</h2>
+                        <p class="panel-text mb-3">
+                            Depuis cet espace, vous pouvez ajouter des evenements,
+                            modifier ou supprimer les existants et consulter les reservations.
+                        </p>
+
+                        <div class="admin-layout">
+                            <div class="quick-action">
+                                <h3>Actions admin</h3>
+                                <p>Gestes rapides pour piloter votre catalogue et vos reservations.</p>
+                                <div class="admin-toolbar">
+                                    <button type="button" class="btn btn-main btn-main-primary" data-action="show-admin-create">
+                                        Ajouter un evenement
+                                    </button>
+                                    <button type="button" class="btn btn-main btn-main-light" data-action="load-admin-data">
+                                        Recharger les donnees
+                                    </button>
+                                </div>
+                            </div>
+
+                            <form id="admin-create-form" class="admin-form">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Nom</label>
+                                        <input type="text" name="name" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Lieu</label>
+                                        <input type="text" name="location" class="form-control" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label fw-semibold">Description</label>
+                                        <textarea name="description" class="form-control" rows="4" required></textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Date</label>
+                                        <input type="datetime-local" name="date" class="form-control" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-main btn-main-primary mt-3">
+                                    Enregistrer l evenement
+                                </button>
+                            </form>
+
+                            <div>
+                                <h3 class="panel-title mt-2">Gestion des evenements</h3>
+                                <div id="admin-event-list" class="admin-event-list"></div>
+                            </div>
+
+                            <div>
+                                <h3 class="panel-title mt-2">Reservations recues</h3>
+                                <div id="admin-reservation-list" class="admin-reservation-list"></div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-main btn-main-primary mt-4" data-action="logout">
+                            Se deconnecter
+                        </button>
+                    </div>
+
+                    <div id="default-panel" class="panel-card">
+                        <div class="status-pill mb-3">Parcours guide</div>
+                        <h2 class="panel-title">Choisissez votre point d entree</h2>
+                        <p class="panel-text">
+                            Commencez par l inscription si vous n avez pas encore de compte,
+                            ou connectez-vous pour ouvrir automatiquement le dashboard adapte
+                            a vos identifiants et a votre role.
+                        </p>
+                    </div>
+
+                    <div id="app-feedback" class="flash-box" data-tone="info"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}

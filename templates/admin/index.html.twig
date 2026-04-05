@@ -1,20 +1,153 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}Hello AdminController!{% endblock %}
+{% block title %}Dashboard Admin | Event Reservation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .admin-shell {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 2rem 1rem 4rem;
+        }
+
+        .admin-hero,
+        .admin-block {
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid #dde3eb;
+            border-radius: 24px;
+            box-shadow: 0 16px 36px rgba(20, 33, 61, 0.06);
+        }
+
+        .admin-hero {
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-badge {
+            display: inline-block;
+            padding: 0.55rem 0.85rem;
+            border-radius: 999px;
+            background: #eef4ff;
+            color: #1f4ea3;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .admin-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            color: #14213d;
+            margin-bottom: 0.75rem;
+        }
+
+        .admin-text {
+            color: #5b6475;
+            line-height: 1.75;
+            margin-bottom: 0;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 1.5rem;
+        }
+
+        .admin-block {
+            padding: 1.5rem;
+        }
+
+        .admin-block h2 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #14213d;
+            margin-bottom: 1rem;
+        }
+
+        .admin-event-card,
+        .admin-reservation-card {
+            border: 1px solid #dde3eb;
+            border-radius: 18px;
+            padding: 1rem;
+            background: #fff;
+        }
+
+        .admin-event-card + .admin-event-card,
+        .admin-reservation-card + .admin-reservation-card {
+            margin-top: 1rem;
+        }
+
+        .admin-card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .admin-empty {
+            color: #5b6475;
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 991.98px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="admin-shell">
+        <section class="admin-hero">
+            <span class="admin-badge">Administration</span>
+            <h1 class="admin-title">Piloter les evenements et les reservations</h1>
+            <p class="admin-text">
+                Cet espace permet d ajouter un evenement, de modifier ou supprimer les entrees existantes
+                et de consulter les reservations associees a la plateforme.
+            </p>
+        </section>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        <section class="admin-grid">
+            <div class="admin-block">
+                <h2>Evenements a gerer</h2>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/symfonyProjects/EventProjet/MiniProjet-EventReservation/src/Controller/AdminController.php</code></li>
-        <li>Your template at <code>C:/symfonyProjects/EventProjet/MiniProjet-EventReservation/templates/admin/index.html.twig</code></li>
-    </ul>
-</div>
+                {% if events is defined and events is not empty %}
+                    {% for event in events %}
+                        <article class="admin-event-card">
+                            <h3 class="h5 fw-bold mb-2">{{ event.name }}</h3>
+                            <p class="text-muted mb-2">{{ event.description }}</p>
+                            <div class="text-muted small">
+                                {{ event.date ? event.date|date('d/m/Y H:i') : '' }} | {{ event.location }}
+                            </div>
+                            <div class="admin-card-actions">
+                                <button class="btn btn-primary btn-sm" type="button">Modifier</button>
+                                <button class="btn btn-outline-danger btn-sm" type="button">Supprimer</button>
+                            </div>
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <p class="admin-empty">Aucun evenement disponible pour le moment.</p>
+                {% endif %}
+            </div>
+
+            <div class="admin-block">
+                <h2>Reservations</h2>
+
+                {% if reservations is defined and reservations is not empty %}
+                    {% for reservation in reservations %}
+                        <article class="admin-reservation-card">
+                            <h3 class="h6 fw-bold mb-2">{{ reservation.event.name }}</h3>
+                            <p class="text-muted mb-1">Utilisateur #{{ reservation.user.id }}</p>
+                            <p class="text-muted mb-0">
+                                {{ reservation.createdAt ? reservation.createdAt|date('d/m/Y H:i') : '' }}
+                            </p>
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <p class="admin-empty">Aucune reservation a afficher.</p>
+                {% endif %}
+            </div>
+        </section>
+    </div>
 {% endblock %}
