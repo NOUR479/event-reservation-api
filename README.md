@@ -1,52 +1,52 @@
 # Event Reservation
 
-Application Symfony de reservation d'evenements avec authentification JWT, espace utilisateur, espace administrateur et gestion des reservations.
+Symfony application for event booking with JWT authentication, user space, admin space, and reservation management.
 
-## Apercu
+## Overview
 
-Ce projet permet de :
+This project allows users to:
 
-- creer un compte utilisateur ou administrateur
-- se connecter avec email et mot de passe
-- afficher un dashboard adapte au role
-- consulter les evenements disponibles
-- reserver un evenement
-- consulter et supprimer ses propres reservations
-- administrer les evenements
-- consulter les reservations cote admin
+- create a user or admin account
+- log in with email and password
+- access a dashboard based on their role
+- browse available events
+- reserve an event
+- view and delete their own reservations
+- manage events as an administrator
+- review reservations from the admin side
 
-Le projet utilise Symfony 7.4, Doctrine ORM, MySQL, Twig, Asset Mapper, Lexik JWT Authentication et Mailpit pour les emails en local.
+The project uses Symfony 7.4, Doctrine ORM, MySQL, Twig, Asset Mapper, Lexik JWT Authentication, and Mailpit for local email testing.
 
-## Fonctionnalites
+## Features
 
-### Cote utilisateur
+### User side
 
-- inscription avec choix de role depuis l'accueil
-- connexion JWT
-- affichage d'un dashboard utilisateur
-- consultation des evenements sous forme de cartes
-- bouton `Reserver` sur chaque evenement
-- consultation de ses reservations
-- suppression d'une reservation personnelle
+- registration with role selection from the home page
+- JWT login
+- dedicated user dashboard
+- event cards display
+- `Reserve` button on each event
+- personal reservations list
+- reservation deletion
 
-### Cote administrateur
+### Admin side
 
-- inscription admin
-- dashboard admin
-- ajout d'un evenement
-- modification d'un evenement
-- suppression d'un evenement
-- consultation de toutes les reservations
+- admin registration
+- admin dashboard
+- create an event
+- update an event
+- delete an event
+- view all reservations
 
-### Technique
+### Technical features
 
-- API REST protegee par JWT
-- roles `ROLE_USER` et `ROLE_ADMIN`
-- templates Twig pour l'interface
-- Docker Compose pour PHP, Nginx, MySQL et Mailpit
-- bundle WebAuthn installe pour une future evolution passkeys
+- JWT-protected REST API
+- `ROLE_USER` and `ROLE_ADMIN`
+- Twig-based interface
+- Docker Compose setup for PHP, Nginx, MySQL, and Mailpit
+- WebAuthn bundle already installed for future passkey support
 
-## Stack technique
+## Tech Stack
 
 - PHP 8.2+
 - Symfony 7.4
@@ -56,10 +56,10 @@ Le projet utilise Symfony 7.4, Doctrine ORM, MySQL, Twig, Asset Mapper, Lexik JW
 - Symfony Asset Mapper
 - Lexik JWT Authentication Bundle
 - Nelmio Cors Bundle
-- Mailer Symfony
+- Symfony Mailer
 - Docker / Docker Compose
 
-## Structure utile
+## Useful Structure
 
 ```text
 src/
@@ -80,24 +80,24 @@ assets/
   styles/
 ```
 
-## Installation locale
+## Local Installation
 
-### 1. Cloner le projet
+### 1. Clone the project
 
 ```bash
-git clone <url-du-repo>
+git clone <repository-url>
 cd MiniProjet-EventReservation
 ```
 
-### 2. Installer les dependances
+### 2. Install dependencies
 
 ```bash
 composer install
 ```
 
-### 3. Configurer l'environnement
+### 3. Configure the environment
 
-Le projet utilise par defaut :
+The project currently uses:
 
 ```env
 DATABASE_URL="mysql://root:@127.0.0.1:3306/event_db?serverVersion=8.0"
@@ -107,70 +107,70 @@ JWT_PASSPHRASE=123456
 MAILER_DSN=smtp://localhost:1025
 ```
 
-Adaptez `.env` ou `.env.local` selon votre machine.
+Adjust `.env` or `.env.local` to match your local machine.
 
-### 4. Creer la base de donnees
+### 4. Create the database
 
 ```bash
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 ```
 
-### 5. Lancer le serveur Symfony
+### 5. Start the Symfony server
 
 ```bash
 symfony server:start
 ```
 
-Ou avec PHP :
+Or with PHP:
 
 ```bash
 php -S 127.0.0.1:8000 -t public
 ```
 
-## Lancement avec Docker
+## Run with Docker
 
-Le projet contient un `docker-compose.yml` avec :
+The project includes a `docker-compose.yml` file with:
 
 - `php`
 - `nginx`
 - `db`
 - `mailer` via Mailpit
 
-### Demarrer les services
+### Start services
 
 ```bash
 docker compose up -d
 ```
 
-### Acces utiles
+### Useful access points
 
-- application : `http://localhost:8080`
-- Mailpit : `http://localhost:8025`
-- MySQL : port `3307`
+- application: `http://localhost:8080`
+- Mailpit: `http://localhost:8025`
+- MySQL: port `3307`
 
-## Authentification et roles
+## Authentication and Roles
 
-Deux roles principaux sont geres :
+Two main roles are supported:
 
 - `ROLE_USER`
 - `ROLE_ADMIN`
 
-L'inscription utilisateur utilise :
+User registration endpoint:
 
 - `POST /api/register`
 
-L'inscription administrateur utilise :
+Admin registration endpoint:
 
 - `POST /api/registerAdmin`
 
-La connexion JWT utilise :
+JWT login endpoint:
 
 - `POST /api/login_check`
 
-Une fois connecte, le token JWT est utilise pour acceder aux endpoints proteges.
+Once logged in, the JWT token is used to access protected endpoints.
 
-## Endpoints principaux
+## Main Endpoints
 
 ### Auth
 
@@ -178,74 +178,74 @@ Une fois connecte, le token JWT est utilise pour acceder aux endpoints proteges.
 - `POST /api/registerAdmin`
 - `POST /api/login_check`
 
-### Evenements
+### Events
 
-- `GET /api/events` : liste des evenements pour utilisateur connecte
-- `POST /api/events` : creation d'un evenement par l'admin
-- `PUT /api/events/{id}` : modification d'un evenement par l'admin
-- `DELETE /api/events/{id}` : suppression d'un evenement par l'admin
+- `GET /api/events`: list events for authenticated users
+- `POST /api/events`: create a new event as admin
+- `PUT /api/events/{id}`: update an event as admin
+- `DELETE /api/events/{id}`: delete an event as admin
 
 ### Reservations
 
-- `POST /api/reservations` : reserver un evenement
-- `GET /api/reservations/my` : afficher les reservations de l'utilisateur connecte
-- `DELETE /api/reservations/my/{id}` : supprimer sa reservation
-- `GET /api/reservations` : afficher toutes les reservations cote admin
+- `POST /api/reservations`: reserve an event
+- `GET /api/reservations/my`: list the current user's reservations
+- `DELETE /api/reservations/my/{id}`: delete one of the current user's reservations
+- `GET /api/reservations`: list all reservations as admin
 
-## Interfaces disponibles
+## Available Interfaces
 
-### Accueil
+### Home page
 
-L'accueil permet :
+The home page allows users to:
 
-- de s'inscrire
-- de se connecter
-- d'afficher un dashboard utilisateur ou admin apres connexion
+- register
+- log in
+- access either the user dashboard or the admin dashboard after authentication
 
-### Dashboard utilisateur
+### User dashboard
 
-- voir ses reservations
-- voir les evenements
-- reserver un evenement
-- supprimer sa reservation
+- view personal reservations
+- view events
+- reserve an event
+- delete a reservation
 
-### Dashboard admin
+### Admin dashboard
 
-- voir les evenements
-- ajouter un evenement
-- modifier un evenement
-- supprimer un evenement
-- consulter les reservations
+- manage events
+- add events
+- update events
+- delete events
+- review reservations
 
 ## Email
 
-Lorsqu'une reservation est creee, un email de confirmation est envoye via le composant Mailer.
+When a reservation is created, a confirmation email is sent through Symfony Mailer.
 
-En local, vous pouvez consulter les emails avec Mailpit :
+In local development, emails can be viewed with Mailpit:
 
 - `http://localhost:8025`
 
-## Formulaires Symfony
+## Symfony Forms
 
-Des `FormType` sont presents dans `src/Form` :
+The following `FormType` classes are available in `src/Form`:
 
 - `EventType`
 - `RegistrationFormType`
 - `ReservationType`
 
-Ils preparent la structure pour une integration plus poussee avec des formulaires Symfony classiques.
+These forms provide a base for deeper integration with standard Symfony form workflows.
 
 ## Passkeys / WebAuthn
 
-Le bundle WebAuthn est deja installe dans le projet :
+The WebAuthn bundle is already installed:
 
 - `web-auth/webauthn-symfony-bundle`
 
-L'integration complete des passkeys n'est pas encore finalisee, mais la base technique est deja presente pour une evolution future.
+Full passkey integration is not finished yet, but the technical foundation is already present for future development.
 
-## Verification rapide
+## Quick Checks
 
-Quelques commandes utiles :
+Useful validation commands:
 
 ```bash
 php -l src/Controller/AuthController.php
@@ -254,15 +254,6 @@ php -l src/Controller/ReservationController.php
 php -l src/Controller/AdminController.php
 ```
 
-## Ameliorations possibles
+## Authors
 
-- finaliser l'integration passkeys
-- ajouter la validation avancee des formulaires
-- ajouter des tests fonctionnels
-- ajouter la pagination et la recherche d'evenements
-- enrichir les dashboards avec statistiques et filtres
-- gerer l'upload d'image pour les evenements
-
-## Auteurs
-
-Projet Symfony de reservation d'evenements realise dans un cadre d'apprentissage / mini projet.
+Symfony event reservation project created as a learning / mini project.
