@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\EventRepository;
@@ -19,7 +22,8 @@ final class ReservationController extends AbstractController
     public function reserve(
         Request $request,
         EntityManagerInterface $em,
-        EventRepository $eventRepo
+        EventRepository $eventRepo,
+        MailerInterface $mailer
     ) {
         $data = json_decode($request->getContent(), true);
 
@@ -27,6 +31,9 @@ final class ReservationController extends AbstractController
         $reservation->setCreatedAt(new \DateTimeImmutable()); 
 
         $event = $eventRepo->find($data['event_id']);
+        if (!$event) {
+            return $this->json(['error' => 'Event not found'], 404);
+        }
         $reservation->setEvent($event);
 
         $user = $this->getUser();
@@ -40,6 +47,14 @@ final class ReservationController extends AbstractController
         $em->persist($reservation);
         $em->flush();
 
-        return $this->json(['message' => 'Reservation created']);
+        $email = (new Email())
+        ->from('noreply@test.com')
+        ->to($user->getUserIdentifier())
+        ->subject('Reservation Confirmed')
+        ->text('You reserved: ' . $event->getName());
+
+    $mailer->send($email);
+
+    return $this->json(['message' => 'Reservation created + email sent']);
     }
 }
