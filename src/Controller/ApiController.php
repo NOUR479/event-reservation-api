@@ -15,6 +15,9 @@ class ApiController extends AbstractController
         /** @var User $user */
         $user=$this->getUser();
 
+        if (!$user) {
+            return $this->json(['error' => 'Unauthorized'], 401);
+        }
         return $this->json([
             'message' => 'JWT fonctionne ',
             'user' => $user->getEmail(),

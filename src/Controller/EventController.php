@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\EventRepository;
-use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,7 +34,21 @@ final class EventController extends AbstractController
     #[Route('/api/events', methods: ['GET'])]
     public function list(EventRepository $repo)
     {
-        return $this->json($repo->findAll());
+         $events = $repo->findAll();
+
+        $data = [];
+
+        foreach ($events as $event) {
+            $data[] = [
+                'id' => $event->getId(),
+                'name' => $event->getName(),
+                'description' => $event->getDescription(),
+                'date' => $event->getDate()->format('Y-m-d H:i'),
+                'location' => $event->getLocation(),
+            ];
+        }
+
+        return $this->json($data);
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -9,13 +10,13 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 
 final class AuthController extends AbstractController
 {
     #[Route('/api/register', name: 'app_register',methods:['POST'])]
-    #[IsGranted('ROLE_USER')]
+    
     public function register(Request $request,EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher)
     {
        $data = json_decode($request->getContent(), true);
@@ -34,5 +35,12 @@ final class AuthController extends AbstractController
     return $this->json([
         'message' => 'User created successfully'
     ]);
+    }
+
+     #[Route('/api/login_check', name: 'api_login_check', methods: ['POST'])]
+    public function loginCheck(): JsonResponse
+    {
+        // cette méthode ne sera jamais appelée, le firewall s’en charge
+        throw new \LogicException('This should never be called directly. Handled by firewall.');
     }
 }
