@@ -97,5 +97,23 @@ final class ReservationController extends AbstractController
 
         return $this->json(['message' => 'Reservation deleted']);
     }
+    //admin can see all reservations + user ID
+    #[Route('/api/reservations', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function allReservations(ReservationRepository $repo)
+    {        $reservations = $repo->findAll();  
+
+        $data = [];
+        foreach ($reservations as $res) {
+            $data[] = [
+                'id' => $res->getId(),
+                'event' => $res->getEvent()->getName(),
+                'user_id' => $res->getUser()->getId(),
+                'date_reserved' => $res->getCreatedAt()->format('Y-m-d H:i')
+            ];
+        }
+
+        return $this->json($data);
+    }
 
 }

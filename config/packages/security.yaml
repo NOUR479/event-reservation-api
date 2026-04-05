@@ -158,6 +158,12 @@ security:
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        
+
+        register:
+            pattern: ^/api/register(Admin)?$
+            stateless: true
+            security: false  # PAS DE JWT POUR REGISTER
 
         api:
             pattern: ^/api
@@ -177,6 +183,7 @@ security:
     access_control:
         - { path: ^/api/login_check$, roles: PUBLIC_ACCESS }
         - { path: ^/api/register$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/registerAdmin$, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
