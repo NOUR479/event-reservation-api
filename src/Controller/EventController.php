@@ -14,7 +14,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class EventController extends AbstractController
 {
    #[Route('/api/events', methods: ['POST'])]
-   #[IsGranted('ROLE_USER')]
+   #[IsGranted('ROLE_ADMIN')]
     public function create(Request $request, EntityManagerInterface $em)
     {
         $data = json_decode($request->getContent(), true);
@@ -32,6 +32,7 @@ final class EventController extends AbstractController
     }
 
     #[Route('/api/events', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function list(EventRepository $repo)
     {
          $events = $repo->findAll();
@@ -51,4 +52,41 @@ final class EventController extends AbstractController
         return $this->json($data);
     }
 
+
+    // Update event (Admin only)
+    #[Route('/api/events/{id}', name:'update_event', methods: ['PUT'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function update($id, Request $request, EventRepository $repo, EntityManagerInterface $em)
+    {
+        $event = $repo->find($id);
+        if (!$event) {
+            return $this->json(['error' => 'Event not found'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $event->setName($data['name'] ?? $event->getName());
+        $event->setDescription($data['description'] ?? $event->getDescription());
+        if (!empty($data['date'])) $event->setDate(new \DateTime($data['date']));
+        $event->setLocation($data['location'] ?? $event->getLocation());
+
+        $em->flush();
+
+        return $this->json(['message' => 'Event updated']);
+    }
+
+    // Delete event (Admin only)
+    #[Route('/api/events/{id}', name:'delete_event', methods: ['DELETE'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function delete($id, EventRepository $repo, EntityManagerInterface $em)
+    {
+        $event = $repo->find($id);
+        if (!$event) {
+            return $this->json(['error' => 'Event not found'], 404);
+        }
+
+        $em->remove($event);
+        $em->flush();
+
+        return $this->json(['message' => 'Event deleted']);
+    }
 }
