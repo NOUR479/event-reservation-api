@@ -241,7 +241,6 @@ The WebAuthn bundle is already installed:
 
 - `web-auth/webauthn-symfony-bundle`
 
-Full passkey integration is not finished yet, but the technical foundation is already present for future development.
 
 ## Quick Checks
 
